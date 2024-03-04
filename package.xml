@@ -3,9 +3,9 @@
 <package format="3">
   <name>ardi</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
-  <maintainer email="my_email@email.com">MY NAME</maintainer>
-  <license>TODO: License declaration</license>
+  <description>TODO: copied template for ardi</description>
+  <maintainer email="greg.broug@gmail.com">greg</maintainer>
+  <license>TODO:yes</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
