@@ -1,3 +1,4 @@
+#v1.1.0 - Added image transport node and camera_info topic remapping
 cmake_minimum_required(VERSION 3.8)
 project(ardi)
 

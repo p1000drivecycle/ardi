@@ -5,8 +5,9 @@ from launch.conditions import IfCondition
 from ament_index_python.packages import get_package_share_directory
 from launch.substitutions import LaunchConfiguration, PythonExpression
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument, GroupAction
+from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument, GroupAction, TimerAction
 #v1.1.0 - Added image transport node and camera_info topic remapping
+#v1.2.0 - In progress, added laser scan QoS settings, static transform for lidar, and tf2 buffer server
 def generate_launch_description():
 
     # Package name
@@ -15,6 +16,7 @@ def generate_launch_description():
     # Launch configurations
     world = LaunchConfiguration('world')
     rviz = LaunchConfiguration('rviz')
+    enable_depth_compression = LaunchConfiguration('enable_depth_compression')
 
     # Path to default world 
     world_path = os.path.join(get_package_share_directory(package_name),'worlds', 'obstacles.world')
@@ -29,8 +31,12 @@ def generate_launch_description():
         description='Opens rviz is set to True')
 
     declare_use_sim_time = DeclareLaunchArgument(
-        name='use_sim_time', default_value='true',
+        name='use_sim_time', default_value='false',
         description='Use sim time if true')
+    
+    declare_enable_depth_compression = DeclareLaunchArgument(
+        name='enable_depth_compression', default_value='true',
+        description='Enable depth image compression for /camera/depth_image topic') 
 
     # Launch Robot State Publisher Node
     urdf_path = os.path.join(get_package_share_directory(package_name),'urdf','robot_model.urdf')
@@ -96,7 +102,7 @@ def generate_launch_description():
         output="screen",
         parameters=[
             {'use_sim_time': LaunchConfiguration('use_sim_time'),
-             'camera.image.compressed.jpeg_quality': 75},
+             'camera.image.format': 'png'},
         ],
     )
 
@@ -112,16 +118,75 @@ def generate_launch_description():
         ]
     )
 
+    depth_image_republish = Node(
+        package="image_transport",
+        executable="republish",
+        name="depth_image_republish",
+        namespace="camera/depth_image",
+        arguments=["raw", "compressedDepth"],
+        remappings=[
+            ("in", "/camera/depth_image"),
+        ],
+        parameters=[{"use_sim_time": True}],
+        output="screen",
+        condition=IfCondition(enable_depth_compression),
+    )
+
+    depth_compressed_relay = Node(
+        package="topic_tools",
+        executable="relay",
+        name="depth_compressed_relay",
+        arguments=[
+            "/camera/depth_image/out/compressedDepth",
+            "/camera/depth_image/compressedDepth",
+        ],
+        parameters=[{"use_sim_time": True}],
+        output="screen",
+        condition=IfCondition(LaunchConfiguration("enable_depth_compression")),
+    )
+
+    # Static transform publisher for GPU Lidar
+    static_lidar_tf = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        name='static_tf_gpu_lidar',
+        parameters=[{'use_sim_time': True}],
+        arguments=[
+            '--frame-id', 'base_link',
+            '--child-frame-id', 'ardi/base_link/gpu_lidar',
+            '--x', '0.05', '--y', '0', '--z', '0.23',
+            '--roll', '0', '--pitch', '0', '--yaw', '0']
+    )
+
+    # Wrap it in a TimerAction to delay startup by 2 seconds
+    static_lidar_tf_delayed = TimerAction(
+        period=2.0,  # seconds
+        actions=[static_lidar_tf]
+    )
+
+    # Increase the tf2 buffer size by launching a tf2 buffer server
+    tf_buffer_server = Node(
+        package='tf2_ros',
+        executable='buffer_server',
+        name='tf_buffer_server',
+        parameters=[{'use_sim_time': True}],
+    )
+    
     # Launch them all!
     return LaunchDescription([
         # Declare launch arguments
         declare_rviz,
         declare_world,
         declare_use_sim_time,
+        declare_enable_depth_compression,
 
         # Launch the nodes
         gz_image_bridge_node,
         relay_camera_info_node,
+        depth_image_republish,
+        depth_compressed_relay,
+        static_lidar_tf_delayed,
+        tf_buffer_server,
         rviz2,
         rsp,
         gazebo_server,
