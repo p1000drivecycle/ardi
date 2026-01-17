@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- v1.0.0 - Initial stable version for simulation with Gazebo Harmonic and ROS 2 Jazzy -->
+<!-- v1.1.0 - Added image transport node and camera_info topic remapping -->
 <sdf version="1.8">
     <world name="empty">
         <physics name="1ms" type="ignored">

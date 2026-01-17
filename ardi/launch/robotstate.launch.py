@@ -4,7 +4,8 @@ from launch.actions import DeclareLaunchArgument
 from launch_ros.substitutions import FindPackageShare
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, Command
 
-# v1.0.0 - Initial stable version for simulation with Gazebo Harmonic and ROS 2 Jazzy
+#v1.1.0 - Added image transport node and camera_info topic remapping
+
 def generate_launch_description():
 
     # Package name

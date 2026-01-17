@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
+<!-- v1.1.0 - Added image transport node and camera_info topic remapping -->
     <robot name="ardi" xmlns:xacro="http://www.ros.org/wiki/xacro" >
 
-    <!-- v1.0.0 - Initial stable version for simulation with Gazebo Harmonic and ROS 2 Jazzy -->
     <xacro:include filename="$(find ardi)/urdf/robot_plugins.gazebo" />
 
     <xacro:include filename="inertial_macros.xacro" />
@@ -462,7 +462,7 @@
 
     <!-- imu link -->
     <link name="imu_link">
-     <!--    <visual>
+        <visual>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
                 <box size="0.03 0.06 0.02"/>
@@ -482,7 +482,7 @@
             <material name="imu-material">
                 <color rgba="1 1 1 1"/>
             </material>
-        </gazebo> -->
+        </gazebo>
     </link>
 
     <!-- right ultra joint -->

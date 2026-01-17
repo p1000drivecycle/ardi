@@ -1,0 +1,4 @@
+source;share/ardi/local_setup.bash
+source;share/ardi/local_setup.dsv
+source;share/ardi/local_setup.sh
+source;share/ardi/local_setup.zsh
