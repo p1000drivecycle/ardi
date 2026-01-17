@@ -1,8 +1,0 @@
-source;share/ardi/hook/cmake_prefix_path.ps1
-source;share/ardi/hook/cmake_prefix_path.dsv
-source;share/ardi/hook/cmake_prefix_path.sh
-source;share/ardi/local_setup.bash
-source;share/ardi/local_setup.dsv
-source;share/ardi/local_setup.ps1
-source;share/ardi/local_setup.sh
-source;share/ardi/local_setup.zsh
