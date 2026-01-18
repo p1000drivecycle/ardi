@@ -1,9 +1,10 @@
-# Squint v1.1.0: Added image transport node and relay camera_info topic
+# Wink v1.2.0: Added gpu_lidar, depth image compression, QoS and tf buffer
 
 ## ROS2 Jazzy/Gazebo Harmonic:
 - diff_drive sensor plugin
 - imu sensor plugin
 - rgbd_camera (via sensors plugin)
+- gpu_lidar (via sensors plugin)
 
 
 ## Install plugins/tools:

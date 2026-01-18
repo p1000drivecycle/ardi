@@ -1,3 +1,4 @@
+# Ignore ROS2 build artifacts
 install/
 log/
 build/
@@ -6,23 +7,22 @@ build/
 *.dox
 *.wikidoc
 
-# eclipse stuff
-.project
-.cproject
+# IDEs
+.vscode/
+.idea/
 
-# qcreator stuff
-CMakeLists.txt.user
-
-srv/_*.py
-*.pcd
-*.pyc
-qtcreator-*
-*.user
+# OS junk
+.DS_Store
+Thumbs.db
 
 *~
 
-# Emacs
-.#*
+# Python
+__pycache__/
+*.pyc
+
+# Backup / temp
+*~
 
 # Colcon custom files
 COLCON_IGNORE
